@@ -1,0 +1,351 @@
+/* ==========================================================================
+   ZENITH — Apple-Inspired Liquid Glass Design System
+   Inspired by visionOS, macOS Sonoma/Sequoia & iOS Control Center
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* Apple Native System Typography */
+  --font-apple: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "SF Pro", "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-mono: "SF Mono", "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
+
+  /* ==========================================================================
+     LIGHT THEME (Apple Frosted Platinum & Ceramic Glass)
+     ========================================================================== */
+  --bg-base: #F5F5F7;
+  --bg-gradient: radial-gradient(at 0% 0%, rgba(224, 242, 254, 0.6) 0px, transparent 50%),
+                 radial-gradient(at 100% 0%, rgba(237, 233, 254, 0.5) 0px, transparent 50%),
+                 radial-gradient(at 100% 100%, rgba(254, 243, 199, 0.4) 0px, transparent 50%),
+                 radial-gradient(at 0% 100%, rgba(220, 252, 231, 0.4) 0px, transparent 50%);
+
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-bg-elevated: rgba(255, 255, 255, 0.82);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.45);
+  --glass-bg-hover: rgba(255, 255, 255, 0.92);
+
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --glass-border-subtle: rgba(0, 0, 0, 0.06);
+  --glass-border-hover: rgba(0, 113, 227, 0.35);
+
+  --glass-specular: inset 0 1px 1px 0 rgba(255, 255, 255, 0.95), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.03);
+  --glass-shadow: 0 8px 30px rgba(0, 0, 0, 0.05), 0 2px 8px rgba(0, 0, 0, 0.03);
+  --glass-shadow-elevated: 0 16px 40px rgba(0, 0, 0, 0.08), 0 4px 14px rgba(0, 0, 0, 0.04);
+
+  --text-primary: #1D1D1F;
+  --text-secondary: #6E6E73;
+  --text-muted: #86868B;
+
+  /* Apple Muted Accent Tints */
+  --apple-blue: #0071E3;
+  --apple-blue-hover: #0077ED;
+  --apple-blue-bg: rgba(0, 113, 227, 0.1);
+
+  --apple-purple: #AF52DE;
+  --apple-purple-bg: rgba(175, 82, 222, 0.1);
+
+  --apple-emerald: #34C759;
+  --apple-emerald-bg: rgba(52, 199, 89, 0.1);
+
+  --apple-amber: #FF9500;
+  --apple-amber-bg: rgba(255, 149, 0, 0.1);
+
+  --apple-rose: #FF2D55;
+  --apple-rose-bg: rgba(255, 45, 85, 0.1);
+
+  --apple-indigo: #5856D6;
+
+  /* Blur strength */
+  --blur-panel: blur(28px) saturate(190%);
+  --blur-card: blur(20px) saturate(180%);
+  --blur-subtle: blur(14px) saturate(160%);
+}
+
+/* ==========================================================================
+   DARK THEME (visionOS Deep Space Obsidian & Translucent Quartz)
+   ========================================================================== */
+[data-theme="dark"] {
+  --bg-base: #000000;
+  --bg-gradient: radial-gradient(at 0% 0%, rgba(30, 27, 75, 0.5) 0px, transparent 60%),
+                 radial-gradient(at 100% 0%, rgba(15, 23, 42, 0.6) 0px, transparent 60%),
+                 radial-gradient(at 100% 100%, rgba(13, 40, 30, 0.35) 0px, transparent 60%),
+                 radial-gradient(at 0% 100%, rgba(49, 10, 36, 0.3) 0px, transparent 60%);
+
+  --glass-bg: rgba(28, 28, 30, 0.62);
+  --glass-bg-elevated: rgba(44, 44, 46, 0.72);
+  --glass-bg-subtle: rgba(22, 22, 24, 0.45);
+  --glass-bg-hover: rgba(58, 58, 60, 0.85);
+
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-border-subtle: rgba(255, 255, 255, 0.08);
+  --glass-border-hover: rgba(255, 255, 255, 0.3);
+
+  --glass-specular: inset 0 1px 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.4);
+  --glass-shadow: 0 12px 36px rgba(0, 0, 0, 0.55), 0 4px 12px rgba(0, 0, 0, 0.35);
+  --glass-shadow-elevated: 0 24px 60px rgba(0, 0, 0, 0.75), 0 8px 24px rgba(0, 0, 0, 0.5);
+
+  --text-primary: #FFFFFF;
+  --text-secondary: #A1A1A6;
+  --text-muted: #6E6E73;
+
+  /* Apple Muted Dark Accents */
+  --apple-blue: #2997FF;
+  --apple-blue-hover: #47A3FF;
+  --apple-blue-bg: rgba(41, 151, 255, 0.16);
+
+  --apple-purple: #BF5AF2;
+  --apple-purple-bg: rgba(191, 90, 242, 0.16);
+
+  --apple-emerald: #30D158;
+  --apple-emerald-bg: rgba(48, 209, 88, 0.16);
+
+  --apple-amber: #FF9F0A;
+  --apple-amber-bg: rgba(255, 159, 10, 0.16);
+
+  --apple-rose: #FF375F;
+  --apple-rose-bg: rgba(255, 55, 95, 0.16);
+
+  --apple-indigo: #5E5CE6;
+}
+
+/* ==========================================================================
+   GLOBAL BASE & RESET
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-apple);
+  background-color: var(--bg-base);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  background-size: cover;
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.011em;
+}
+
+/* Apple Numeric Tabular Alignment */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Ambient Liquid Glowing Orbs (Behind glass) */
+.ambient-glow-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.ambient-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  opacity: 0.45;
+  transition: all 1s ease;
+  will-change: transform, opacity;
+}
+
+/* ==========================================================================
+   LIQUID GLASS UTILITIES
+   ========================================================================== */
+.liquid-glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--blur-panel);
+  -webkit-backdrop-filter: var(--blur-panel);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-specular), var(--glass-shadow);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.liquid-glass-elevated {
+  background: var(--glass-bg-elevated);
+  backdrop-filter: var(--blur-panel);
+  -webkit-backdrop-filter: var(--blur-panel);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-specular), var(--glass-shadow-elevated);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.liquid-glass-subtle {
+  background: var(--glass-bg-subtle);
+  backdrop-filter: var(--blur-subtle);
+  -webkit-backdrop-filter: var(--blur-subtle);
+  border: 1px solid var(--glass-border-subtle);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.liquid-glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--blur-card);
+  -webkit-backdrop-filter: var(--blur-card);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-specular), var(--glass-shadow);
+  border-radius: 24px;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.liquid-glass-card:hover {
+  transform: translateY(-2px);
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--glass-specular), var(--glass-shadow-elevated);
+}
+
+.liquid-glass-button {
+  background: var(--glass-bg-subtle);
+  backdrop-filter: var(--blur-subtle);
+  -webkit-backdrop-filter: var(--blur-subtle);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-specular);
+  border-radius: 14px;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.liquid-glass-button:hover {
+  background: var(--glass-bg-hover);
+  transform: translateY(-1px);
+}
+
+.liquid-glass-button:active {
+  transform: scale(0.97);
+}
+
+/* ==========================================================================
+   APPLE CUSTOM CHECKBOX (Liquid Squircle with Spring Animation)
+   ========================================================================== */
+.apple-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  border: 1.5px solid var(--glass-border-hover);
+  background: var(--glass-bg-subtle);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  flex-shrink: 0;
+  box-shadow: var(--glass-specular);
+}
+
+.apple-checkbox:hover {
+  transform: scale(1.08);
+  border-color: var(--apple-emerald);
+}
+
+.apple-checkbox:active {
+  transform: scale(0.92);
+}
+
+.apple-checkbox:checked {
+  background: var(--apple-emerald);
+  border-color: var(--apple-emerald);
+  box-shadow: 0 0 14px rgba(52, 199, 89, 0.45);
+  animation: appleSpringCheck 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.apple-checkbox:checked::after {
+  content: "";
+  display: block;
+  width: 5.5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2.2px 2.2px 0;
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+
+@keyframes appleSpringCheck {
+  0% { transform: scale(0.7); }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* Completed task subtle strikethrough */
+.apple-task-completed {
+  text-decoration: line-through;
+  opacity: 0.55;
+  filter: grayscale(0.2);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   PULSING LIQUID GLOWS & AURAS
+   ========================================================================== */
+@keyframes appleGlassPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(41, 151, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(41, 151, 255, 0);
+  }
+}
+.apple-active-pulse {
+  animation: appleGlassPulse 2.5s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+@keyframes appleSiriAura {
+  0% { filter: hue-rotate(0deg); }
+  50% { filter: hue-rotate(45deg); }
+  100% { filter: hue-rotate(0deg); }
+}
+.siri-glow {
+  background: linear-gradient(135deg, #0071E3, #AF52DE, #FF2D55, #0071E3);
+  background-size: 300% 300%;
+  animation: appleSiriAura 6s ease infinite;
+}
+
+/* Glass Modal Sheet */
+.glass-modal-backdrop {
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Minimal Frosted Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 128, 0.25);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 120, 128, 0.45);
+  background-clip: content-box;
+}
+
+/* ==========================================================================
+   REDUCED MOTION ACCESSIBILITY
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

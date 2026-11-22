@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="paper">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taskio — AI-Powered Productivity Planner</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Taskio is a beautiful, AI-powered productivity planner with daily routines, project management, Pomodoro timer, streaks, and an Apple Liquid Glass UI." />
+  <meta name="keywords" content="productivity planner, task manager, pomodoro timer, AI assistant, project management, habit tracker, streak, daily planner" />
+  <meta name="author" content="Taskio" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph / Social Sharing -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Taskio — AI-Powered Productivity Planner" />
+  <meta property="og:description" content="A beautiful Apple-inspired productivity planner with AI coaching, Pomodoro timers, project tracking, and gamified streaks." />
+  <meta property="og:site_name" content="Taskio" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Taskio — AI-Powered Productivity Planner" />
+  <meta name="twitter:description" content="A beautiful Apple-inspired productivity planner with AI coaching, Pomodoro timers, project tracking, and gamified streaks." />
+
+  <!-- PWA / Mobile -->
+  <meta name="theme-color" content="#6366f1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Taskio" />
+  <meta name="mobile-web-app-capable" content="yes" />
+
+  <!-- Favicon (inline SVG) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'><path d='m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z'/></svg>" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'><path d='m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z'/></svg>" />
+
+  <!-- Tailwind CSS Engine -->
+  <script src="vendor/tailwind.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: ['selector', '[data-theme="dark"]'],
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            serif: ['Playfair Display', 'Georgia', 'Cambria', 'serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Physical Diary Theme & Custom Styling -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Core Libraries -->
+  <script src="vendor/react.min.js"></script>
+  <script src="vendor/react-dom.min.js"></script>
+  <script src="vendor/confetti.min.js"></script>
+</head>
+<body class="antialiased min-h-screen relative overflow-x-hidden selection:bg-blue-500/20">
+  <!-- Apple Ambient Liquid Glowing Orbs (Refracts under glass) -->
+  <div class="ambient-glow-container" aria-hidden="true">
+    <div class="ambient-orb w-[550px] h-[550px] -top-28 -left-28 bg-blue-500/20 dark:bg-indigo-600/30"></div>
+    <div class="ambient-orb w-[650px] h-[650px] top-1/4 -right-48 bg-purple-500/18 dark:bg-purple-800/25"></div>
+    <div class="ambient-orb w-[500px] h-[500px] -bottom-32 left-1/3 bg-emerald-500/15 dark:bg-cyan-900/25"></div>
+  </div>
+
+  <div id="root" class="relative z-10">
+    <!-- Initial Loading State -->
+    <div class="h-screen w-screen flex flex-col items-center justify-center space-y-4">
+      <div class="w-14 h-14 rounded-3xl liquid-glass flex items-center justify-center shadow-lg border border-white/20 animate-pulse">
+        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500">
+          <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+        </svg>
+      </div>
+      <p class="font-medium text-xs tracking-wide text-[var(--text-secondary)]">Loading Taskio...</p>
+    </div>
+  </div>
+
+  <!-- Production Pre-compiled Application Bundle -->
+  <script src="dist/bundle.js"></script>
+</body>
+</html>

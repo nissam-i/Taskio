@@ -1,0 +1,25 @@
+{
+  "name": "taskio",
+  "version": "1.0.0",
+  "description": "Taskio — AI-Powered Routine Tracker, Project Manager & Productivity Planner with Apple Liquid Glass UI",
+  "private": true,
+  "scripts": {
+    "build": "node build.js",
+    "start": "node server.js",
+    "test": "node test_app.js"
+  },
+  "keywords": [
+    "productivity",
+    "planner",
+    "task-manager",
+    "pomodoro",
+    "ai-assistant",
+    "react",
+    "liquid-glass"
+  ],
+  "author": "nissam-i",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
