@@ -813,6 +813,39 @@ class StorageService {
     this.save(initial);
     return initial;
   }
+  getBlankState() {
+    return {
+      tasks: [],
+      projects: [],
+      theme: 'dark',
+      soundSettings: {
+        masterEnabled: true,
+        volume: 0.75,
+        interfaceSounds: true,
+        notificationSounds: true
+      },
+      notifications: [],
+      pomodoro: {
+        workDuration: 25,
+        shortBreak: 5,
+        longBreak: 15,
+        sessionsCompleted: 0,
+        totalFocusSeconds: 0
+      },
+      gamification: {
+        xp: 0,
+        level: 1,
+        streak: 0,
+        longestStreak: 0,
+        lastActiveDate: null,
+        completedDates: {},
+        badges: window.PLANNER_CONSTANTS ? window.PLANNER_CONSTANTS.INITIAL_BADGES.map(b => ({
+          ...b,
+          unlockedAt: null
+        })) : []
+      }
+    };
+  }
 }
 window.storageService = new StorageService();
 
@@ -2107,7 +2140,9 @@ const RoutinePlanner = ({
   onToggleSubtask,
   onAddSubtask,
   onToggleTimer,
-  activeTimerId
+  activeTimerId,
+  onClearDayTasks,
+  onStartFresh
 }) => {
   const [filterCategory, setFilterCategory] = React.useState('All');
   const [filterPriority, setFilterPriority] = React.useState('All');
@@ -2251,7 +2286,27 @@ const RoutinePlanner = ({
   }, /*#__PURE__*/React.createElement(Icon, {
     name: "plus",
     size: 13
-  }), " ", /*#__PURE__*/React.createElement("span", null, "Add Task"))))), /*#__PURE__*/React.createElement("div", {
+  }), " ", /*#__PURE__*/React.createElement("span", null, "Add Task")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      window.audioService.playButtonTap();
+      onClearDayTasks(selectedDate);
+    },
+    title: "Delete all tasks for this day",
+    className: "flex items-center space-x-1 px-3 py-1 rounded-xl liquid-glass-button text-xs font-semibold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 border border-rose-500/20 active:scale-95 transition-all"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "trash-2",
+    size: 13
+  }), " ", /*#__PURE__*/React.createElement("span", null, "Clear Day")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      window.audioService.playButtonTap();
+      onStartFresh();
+    },
+    title: "Wipe all data and start a blank fresh Taskio",
+    className: "flex items-center space-x-1 px-3 py-1 rounded-xl liquid-glass-button text-xs font-semibold text-orange-400 hover:text-orange-300 hover:bg-orange-500/10 border border-orange-500/20 active:scale-95 transition-all"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "refresh-cw",
+    size: 13
+  }), " ", /*#__PURE__*/React.createElement("span", null, "Start Fresh"))))), /*#__PURE__*/React.createElement("div", {
     className: "flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl liquid-glass"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center space-x-1.5"
@@ -4701,6 +4756,19 @@ const App = () => {
 
   // Toast
   const [toast, setToast] = React.useState(null);
+
+  // Confirm Dialog
+  const [confirmDialog, setConfirmDialog] = React.useState(null); // { title, body, danger, onConfirm }
+
+  const showConfirm = (title, body, onConfirm, danger = true) => {
+    setConfirmDialog({
+      title,
+      body,
+      onConfirm,
+      danger
+    });
+  };
+  const closeConfirm = () => setConfirmDialog(null);
   const showToast = (message, subtext = null) => {
     setToast({
       message,
@@ -4971,6 +5039,44 @@ const App = () => {
     }));
     showToast('Task Rescheduled', `Moved "${task.title}" to ${newDateStr}.`);
   };
+  const handleClearDayTasks = date => {
+    const count = state.tasks.filter(t => t.date === date).length;
+    if (count === 0) {
+      showToast('No tasks to clear', 'This day is already empty.');
+      return;
+    }
+    showConfirm('Clear All Tasks for This Day?', `This will permanently delete all ${count} task${count > 1 ? 's' : ''} scheduled for ${new Date(date + 'T00:00:00').toLocaleDateString([], {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric'
+    })}. This cannot be undone.`, () => {
+      window.audioService.playTaskDelete();
+      if (activeTimerId) {
+        const activeIsOnDate = state.tasks.find(t => t.id === activeTimerId)?.date === date;
+        if (activeIsOnDate) setActiveTimerId(null);
+      }
+      setState(prev => ({
+        ...prev,
+        tasks: prev.tasks.filter(t => t.date !== date)
+      }));
+      showToast('Day Cleared 🗑️', `All ${count} tasks removed. Fresh slate!`);
+      closeConfirm();
+    });
+  };
+  const handleStartFresh = () => {
+    showConfirm('Start Fresh — Reset Everything?', 'This will permanently delete ALL tasks, projects, streaks, XP, and badges. Your Taskio will reset to a clean blank slate. This action cannot be undone.', () => {
+      if (activeTimerId) setActiveTimerId(null);
+      window.audioService.playTaskDelete();
+      const freshState = window.storageService.getBlankState();
+      freshState.theme = state.theme; // keep current theme
+      freshState.soundSettings = state.soundSettings; // keep sound prefs
+      setState(freshState);
+      window.storageService.save(freshState);
+      showToast('Fresh Start! 🌱', 'All data cleared. Your journey begins now.');
+      closeConfirm();
+      setActiveTab('dashboard');
+    }, true);
+  };
 
   // Project CRUD
   const handleSaveProject = projectData => {
@@ -5151,7 +5257,9 @@ const App = () => {
     onToggleSubtask: handleToggleSubtask,
     onAddSubtask: handleAddSubtask,
     onToggleTimer: handleToggleTimer,
-    activeTimerId: activeTimerId
+    activeTimerId: activeTimerId,
+    onClearDayTasks: handleClearDayTasks,
+    onStartFresh: handleStartFresh
   }), activeTab === 'projects' && /*#__PURE__*/React.createElement(ProjectsView, {
     state: state,
     onOpenProjectModal: () => {
@@ -5220,7 +5328,33 @@ const App = () => {
     className: "text-sm font-bold text-[var(--text-primary)]"
   }, toast.message), toast.subtext && /*#__PURE__*/React.createElement("p", {
     className: "text-xs text-[var(--text-secondary)] mt-0.5"
-  }, toast.subtext))), /*#__PURE__*/React.createElement(TaskModal, {
+  }, toast.subtext))), confirmDialog && /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 z-[200] flex items-center justify-center p-4",
+    style: {
+      backdropFilter: 'blur(20px)',
+      background: 'rgba(0,0,0,0.5)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "liquid-glass-elevated rounded-3xl p-7 max-w-md w-full shadow-2xl border border-white/15 animate-fade-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: `w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5 ${confirmDialog.danger ? 'bg-rose-500/15' : 'bg-blue-500/15'}`
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: confirmDialog.danger ? 'triangle-alert' : 'info',
+    size: 26,
+    className: confirmDialog.danger ? 'text-rose-500' : 'text-blue-500'
+  })), /*#__PURE__*/React.createElement("h3", {
+    className: "text-xl font-bold text-[var(--text-primary)] text-center mb-2 tracking-tight"
+  }, confirmDialog.title), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm text-[var(--text-secondary)] text-center leading-relaxed mb-7"
+  }, confirmDialog.body), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-3"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: closeConfirm,
+    className: "flex-1 py-3 rounded-2xl liquid-glass-button text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all active:scale-95"
+  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+    onClick: confirmDialog.onConfirm,
+    className: `flex-1 py-3 rounded-2xl text-sm font-bold text-white transition-all active:scale-95 shadow-lg ${confirmDialog.danger ? 'bg-rose-500 hover:bg-rose-600 shadow-rose-500/30' : 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/30'}`
+  }, confirmDialog.danger ? 'Yes, Delete' : 'Confirm')))), /*#__PURE__*/React.createElement(TaskModal, {
     isOpen: taskModalOpen,
     onClose: () => setTaskModalOpen(false),
     onSave: handleSaveTask,

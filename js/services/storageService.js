@@ -368,6 +368,26 @@ class StorageService {
     this.save(initial);
     return initial;
   }
+
+  getBlankState() {
+    return {
+      tasks: [],
+      projects: [],
+      theme: 'dark',
+      soundSettings: { masterEnabled: true, volume: 0.75, interfaceSounds: true, notificationSounds: true },
+      notifications: [],
+      pomodoro: { workDuration: 25, shortBreak: 5, longBreak: 15, sessionsCompleted: 0, totalFocusSeconds: 0 },
+      gamification: {
+        xp: 0,
+        level: 1,
+        streak: 0,
+        longestStreak: 0,
+        lastActiveDate: null,
+        completedDates: {},
+        badges: window.PLANNER_CONSTANTS ? window.PLANNER_CONSTANTS.INITIAL_BADGES.map(b => ({ ...b, unlockedAt: null })) : []
+      }
+    };
+  }
 }
 
 window.storageService = new StorageService();

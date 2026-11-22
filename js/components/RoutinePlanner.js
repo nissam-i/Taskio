@@ -13,7 +13,9 @@ const RoutinePlanner = ({
   onToggleSubtask,
   onAddSubtask,
   onToggleTimer,
-  activeTimerId
+  activeTimerId,
+  onClearDayTasks,
+  onStartFresh
 }) => {
   const [filterCategory, setFilterCategory] = React.useState('All');
   const [filterPriority, setFilterPriority] = React.useState('All');
@@ -187,6 +189,28 @@ const RoutinePlanner = ({
               className="flex items-center space-x-1 px-3.5 py-1 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm ml-2 active:scale-95 transition-all"
             >
               <Icon name="plus" size={13} /> <span>Add Task</span>
+            </button>
+            {/* Clear Day */}
+            <button
+              onClick={() => {
+                window.audioService.playButtonTap();
+                onClearDayTasks(selectedDate);
+              }}
+              title="Delete all tasks for this day"
+              className="flex items-center space-x-1 px-3 py-1 rounded-xl liquid-glass-button text-xs font-semibold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 border border-rose-500/20 active:scale-95 transition-all"
+            >
+              <Icon name="trash-2" size={13} /> <span>Clear Day</span>
+            </button>
+            {/* Start Fresh */}
+            <button
+              onClick={() => {
+                window.audioService.playButtonTap();
+                onStartFresh();
+              }}
+              title="Wipe all data and start a blank fresh Taskio"
+              className="flex items-center space-x-1 px-3 py-1 rounded-xl liquid-glass-button text-xs font-semibold text-orange-400 hover:text-orange-300 hover:bg-orange-500/10 border border-orange-500/20 active:scale-95 transition-all"
+            >
+              <Icon name="refresh-cw" size={13} /> <span>Start Fresh</span>
             </button>
           </div>
         </div>

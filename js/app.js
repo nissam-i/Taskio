@@ -34,6 +34,14 @@ const App = () => {
   // Toast
   const [toast, setToast] = React.useState(null);
 
+  // Confirm Dialog
+  const [confirmDialog, setConfirmDialog] = React.useState(null); // { title, body, danger, onConfirm }
+
+  const showConfirm = (title, body, onConfirm, danger = true) => {
+    setConfirmDialog({ title, body, onConfirm, danger });
+  };
+  const closeConfirm = () => setConfirmDialog(null);
+
   const showToast = (message, subtext = null) => {
     setToast({ message, subtext });
     setTimeout(() => {
@@ -284,6 +292,45 @@ const App = () => {
     showToast('Task Rescheduled', `Moved "${task.title}" to ${newDateStr}.`);
   };
 
+  const handleClearDayTasks = (date) => {
+    const count = state.tasks.filter(t => t.date === date).length;
+    if (count === 0) { showToast('No tasks to clear', 'This day is already empty.'); return; }
+    showConfirm(
+      'Clear All Tasks for This Day?',
+      `This will permanently delete all ${count} task${count > 1 ? 's' : ''} scheduled for ${new Date(date + 'T00:00:00').toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' })}. This cannot be undone.`,
+      () => {
+        window.audioService.playTaskDelete();
+        if (activeTimerId) {
+          const activeIsOnDate = state.tasks.find(t => t.id === activeTimerId)?.date === date;
+          if (activeIsOnDate) setActiveTimerId(null);
+        }
+        setState(prev => ({ ...prev, tasks: prev.tasks.filter(t => t.date !== date) }));
+        showToast('Day Cleared 🗑️', `All ${count} tasks removed. Fresh slate!`);
+        closeConfirm();
+      }
+    );
+  };
+
+  const handleStartFresh = () => {
+    showConfirm(
+      'Start Fresh — Reset Everything?',
+      'This will permanently delete ALL tasks, projects, streaks, XP, and badges. Your Taskio will reset to a clean blank slate. This action cannot be undone.',
+      () => {
+        if (activeTimerId) setActiveTimerId(null);
+        window.audioService.playTaskDelete();
+        const freshState = window.storageService.getBlankState();
+        freshState.theme = state.theme; // keep current theme
+        freshState.soundSettings = state.soundSettings; // keep sound prefs
+        setState(freshState);
+        window.storageService.save(freshState);
+        showToast('Fresh Start! 🌱', 'All data cleared. Your journey begins now.');
+        closeConfirm();
+        setActiveTab('dashboard');
+      },
+      true
+    );
+  };
+
   // Project CRUD
   const handleSaveProject = (projectData) => {
     setState(prev => {
@@ -468,6 +515,8 @@ const App = () => {
                 onAddSubtask={handleAddSubtask}
                 onToggleTimer={handleToggleTimer}
                 activeTimerId={activeTimerId}
+                onClearDayTasks={handleClearDayTasks}
+                onStartFresh={handleStartFresh}
               />
             )}
 
@@ -559,6 +608,37 @@ const App = () => {
             {toast.subtext && (
               <p className="text-xs text-[var(--text-secondary)] mt-0.5">{toast.subtext}</p>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Premium Confirm Dialog */}
+      {confirmDialog && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4" style={{ backdropFilter: 'blur(20px)', background: 'rgba(0,0,0,0.5)' }}>
+          <div className="liquid-glass-elevated rounded-3xl p-7 max-w-md w-full shadow-2xl border border-white/15 animate-fade-in">
+            {/* Icon */}
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5 ${confirmDialog.danger ? 'bg-rose-500/15' : 'bg-blue-500/15'}`}>
+              <Icon name={confirmDialog.danger ? 'triangle-alert' : 'info'} size={26} className={confirmDialog.danger ? 'text-rose-500' : 'text-blue-500'} />
+            </div>
+            {/* Title */}
+            <h3 className="text-xl font-bold text-[var(--text-primary)] text-center mb-2 tracking-tight">{confirmDialog.title}</h3>
+            {/* Body */}
+            <p className="text-sm text-[var(--text-secondary)] text-center leading-relaxed mb-7">{confirmDialog.body}</p>
+            {/* Actions */}
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={closeConfirm}
+                className="flex-1 py-3 rounded-2xl liquid-glass-button text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all active:scale-95"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDialog.onConfirm}
+                className={`flex-1 py-3 rounded-2xl text-sm font-bold text-white transition-all active:scale-95 shadow-lg ${confirmDialog.danger ? 'bg-rose-500 hover:bg-rose-600 shadow-rose-500/30' : 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/30'}`}
+              >
+                {confirmDialog.danger ? 'Yes, Delete' : 'Confirm'}
+              </button>
+            </div>
           </div>
         </div>
       )}
